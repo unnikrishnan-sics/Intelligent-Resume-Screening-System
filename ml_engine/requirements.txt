@@ -1,0 +1,10 @@
+flask
+flask-cors
+pdfminer.six
+docx2txt
+spacy
+scikit-learn
+pandas
+numpy
+python-dotenv
+google-generativeai
