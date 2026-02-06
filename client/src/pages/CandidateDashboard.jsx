@@ -8,27 +8,16 @@ import Footer from '../components/Footer';
 const CandidateDashboard = () => {
     const { user } = useAuth();
     const [applications, setApplications] = useState([]);
-    const [jobs, setJobs] = useState([]); // For displaying recent jobs
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Parallel fetch
-                const [appsRes, jobsRes] = await Promise.all([
-                    api.get('/resumes/my-resumes').catch(err => { console.error("Apps fetch failed", err); return { data: [] }; }),
-                    api.get('/jobs').catch(err => { console.error("Jobs fetch failed", err); return { data: [] }; })
+                const [appsRes] = await Promise.all([
+                    api.get('/resumes/my-resumes').catch(err => { console.error("Apps fetch failed", err); return { data: [] }; })
                 ]);
 
                 setApplications(appsRes.data);
-
-                // Sort jobs by date and take recent 3
-                const sortedJobs = jobsRes.data
-                    .filter(j => j.status === 'active')
-                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                    .slice(0, 3);
-
-                setJobs(sortedJobs);
             } catch (error) {
                 console.error("Failed to fetch dashboard data", error);
             } finally {
@@ -74,44 +63,72 @@ const CandidateDashboard = () => {
                     ) : (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
 
-                            {/* Section 1: Recommended Jobs */}
-                            <div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                                    <h2 style={{ fontSize: '1.8rem', margin: 0 }}>Recommended Jobs</h2>
-                                    <Link to="/jobs" className="btn btn-sm btn-outline">View All Jobs &rarr;</Link>
-                                </div>
 
-                                <div style={{ display: 'grid', gap: '1.5rem', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
-                                    {jobs.length > 0 ? (
-                                        jobs.map(job => (
-                                            <div key={job._id} className="card" style={{ padding: '1.5rem', transition: 'transform 0.2s', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', height: '100%' }}>
-                                                <div style={{ marginBottom: '1rem' }}>
-                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
-                                                        <h3 style={{ fontSize: '1.25rem', margin: 0, color: 'var(--primary)' }}>{job.title}</h3>
-                                                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', background: '#f1f5f9', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>{timeAgo(job.createdAt)} ago</span>
-                                                    </div>
-                                                    <p style={{ fontWeight: '500', color: '#334155' }}>{job.department}</p>
-                                                    <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>📍 {job.location} • {job.type}</p>
-                                                </div>
-                                                <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                    <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Match your profile?</span>
-                                                    {applications.some(app => app.job && app.job._id === job._id) ? (
-                                                        <button disabled className="btn btn-sm" style={{ backgroundColor: '#e2e8f0', color: '#64748b', cursor: 'not-allowed', border: 'none' }}>Applied</button>
-                                                    ) : (
-                                                        <Link to={`/jobs/${job._id}/apply`} className="btn btn-sm btn-primary">Apply Now</Link>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <div className="card" style={{ padding: '2rem', textAlign: 'center', width: '100%' }}>
-                                            <p style={{ color: 'var(--text-muted)' }}>No active jobs found at the moment.</p>
+
+                            {/* Section 2: Master Resume Management */}
+                            <div>
+                                <h2 style={{ fontSize: '1.8rem', marginBottom: '1.5rem' }}>Master Resume</h2>
+                                <div className="card" style={{ padding: '2rem', border: '2px dashed #e2e8f0', backgroundColor: 'white' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '2rem' }}>
+                                        <div>
+                                            <p style={{ fontSize: '1.1rem', fontWeight: '600', marginBottom: '0.25rem' }}>
+                                                {user?.resumeOriginalName || 'No master resume uploaded'}
+                                            </p>
+                                            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+                                                Keep your primary resume updated for one-click applications.
+                                            </p>
                                         </div>
-                                    )}
+                                        <div style={{ display: 'flex', gap: '1rem' }}>
+                                            <input
+                                                type="file"
+                                                id="master-resume-input"
+                                                hidden
+                                                onChange={async (e) => {
+                                                    const file = e.target.files[0];
+                                                    if (!file) return;
+                                                    const formData = new FormData();
+                                                    formData.append('resume', file);
+                                                    try {
+                                                        const res = await api.post('/resumes/profile', formData);
+                                                        // Refresh user in context or just reload page for simplicity
+                                                        alert('Master resume updated successfully!');
+                                                        window.location.reload();
+                                                    } catch (err) {
+                                                        alert('Upload failed: ' + (err.response?.data?.message || err.message));
+                                                    }
+                                                }}
+                                            />
+                                            <button
+                                                onClick={() => document.getElementById('master-resume-input').click()}
+                                                className="btn btn-primary"
+                                            >
+                                                {user?.resume ? 'Update Resume' : 'Upload Resume'}
+                                            </button>
+                                            {user?.resume && (
+                                                <button
+                                                    className="btn btn-outline"
+                                                    style={{ borderColor: '#ef4444', color: '#ef4444' }}
+                                                    onClick={async () => {
+                                                        if (window.confirm('Are you sure you want to remove your master resume?')) {
+                                                            try {
+                                                                await api.delete('/resumes/profile');
+                                                                alert('Master resume removed');
+                                                                window.location.reload();
+                                                            } catch (err) {
+                                                                alert('Delete failed');
+                                                            }
+                                                        }
+                                                    }}
+                                                >
+                                                    Remove
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* Section 2: Recent Applications */}
+                            {/* Section 3: Recent Applications */}
                             <div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                                     <h2 style={{ fontSize: '1.8rem', margin: 0 }}>Recent Applications</h2>
@@ -141,7 +158,7 @@ const CandidateDashboard = () => {
                                                                 {app.job?.department}
                                                             </div>
                                                         </div>
-                                                        <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                        <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '1rem' }}>
                                                             <span style={{
                                                                 fontSize: '0.8rem',
                                                                 fontWeight: '600',
@@ -153,7 +170,7 @@ const CandidateDashboard = () => {
                                                                 {isPassed ? 'Shortlisted' : 'Reviewed'}
                                                             </span>
                                                             <Link to={`/my-applications/${app._id}`} style={{ fontSize: '0.9rem', color: 'var(--primary)', textDecoration: 'none' }}>
-                                                                View Details
+                                                                View Analysis &rarr;
                                                             </Link>
                                                         </div>
                                                     </div>

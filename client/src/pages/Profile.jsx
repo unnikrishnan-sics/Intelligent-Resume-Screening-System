@@ -11,8 +11,8 @@ const Profile = () => {
     const [name, setName] = useState(user?.name || '');
     const [email, setEmail] = useState(user?.email || '');
     const [phone, setPhone] = useState(user?.phone || '');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+
+
 
     const [resumeData, setResumeData] = useState({
         originalName: user?.resumeOriginalName
@@ -31,6 +31,17 @@ const Profile = () => {
             setResumeData({ originalName: user.resumeOriginalName });
         }
     }, [user]);
+
+    // Auto-dismiss messages
+    useEffect(() => {
+        if (message || error) {
+            const timer = setTimeout(() => {
+                setMessage(null);
+                setError(null);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [message, error]);
 
     const onFileChange = async (e) => {
         const file = e.target.files[0];
@@ -63,10 +74,6 @@ const Profile = () => {
 
     const handleUpdateProfile = async (e) => {
         e.preventDefault();
-        if (password && password !== confirmPassword) {
-            setError('Passwords do not match');
-            return;
-        }
 
         setLoading(true);
         setError(null);
@@ -76,8 +83,7 @@ const Profile = () => {
             const { data } = await api.put('/auth/profile', {
                 name,
                 email,
-                phone,
-                password: password || undefined
+                phone
             });
 
             setMessage('Profile updated successfully!');
@@ -101,10 +107,13 @@ const Profile = () => {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#f8fafc' }}>
             <Navbar />
-            <div style={{ flex: 1, paddingTop: '100px', paddingBottom: '3rem', display: 'flex', justifyContent: 'center' }}>
+            <div style={{ flex: 1, paddingTop: '140px', paddingBottom: '4rem', display: 'flex', justifyContent: 'center' }}>
                 <div className="container" style={{ maxWidth: '800px', width: '100%' }}>
+                    <h1 style={{ marginBottom: '2.5rem', textAlign: 'left', borderBottom: '2px solid #e2e8f0', paddingBottom: '0.75rem' }}>Profile Settings</h1>
 
-                    <h1 style={{ marginBottom: '2rem' }}>Profile Settings</h1>
+                    {message && <div style={{ marginBottom: '2rem', padding: '1rem', background: '#dcfce7', color: '#166534', borderRadius: '0.5rem', textAlign: 'center', fontWeight: '500', border: '1px solid #bbf7d0' }}>{message}</div>}
+                    {error && <div style={{ marginBottom: '2rem', padding: '1rem', background: '#fee2e2', color: '#991b1b', borderRadius: '0.5rem', textAlign: 'center', fontWeight: '500', border: '1px solid #fecaca' }}>{error}</div>}
+
 
                     <div style={{ display: 'grid', gap: '2rem', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))' }}>
 
@@ -146,31 +155,9 @@ const Profile = () => {
                                     />
                                 </div>
 
-                                <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '1.5rem', marginTop: '1.5rem' }}>
-                                    <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Change Password</h3>
-                                    <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-                                        <label style={{ fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>New Password</label>
-                                        <input
-                                            type="password"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            placeholder="Leave blank to keep current"
-                                            className="input"
-                                            style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #e2e8f0' }}
-                                        />
-                                    </div>
-                                    <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-                                        <label style={{ fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>Confirm New Password</label>
-                                        <input
-                                            type="password"
-                                            value={confirmPassword}
-                                            onChange={(e) => setConfirmPassword(e.target.value)}
-                                            placeholder="Confirm new password"
-                                            className="input"
-                                            style={{ width: '100%', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #e2e8f0' }}
-                                        />
-                                    </div>
-                                </div>
+
+
+
 
                                 <button
                                     type="submit"
@@ -241,8 +228,6 @@ const Profile = () => {
                         </div>
 
                     </div>
-                    {message && <div style={{ marginTop: '2rem', padding: '1rem', background: '#dcfce7', color: '#166534', borderRadius: '0.5rem', textAlign: 'center', fontWeight: '500' }}>{message}</div>}
-                    {error && <div style={{ marginTop: '2rem', padding: '1rem', background: '#fee2e2', color: '#991b1b', borderRadius: '0.5rem', textAlign: 'center', fontWeight: '500' }}>{error}</div>}
                 </div>
             </div>
             <Footer />

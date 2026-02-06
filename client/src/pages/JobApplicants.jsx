@@ -46,6 +46,20 @@ const JobApplicants = () => {
                         <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Applicants for {job?.title}</h1>
                         <p style={{ color: 'var(--text-muted)' }}>AI-Ranked list regarding threshold: <strong>{threshold}%</strong></p>
                     </div>
+                    {applicants.length > 0 && (
+                        <a
+                            href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/resumes/job/${jobId}/export`}
+                            download
+                            className="btn btn-primary"
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                            onClick={(e) => {
+                                // Since it's a direct link to the API, we need to handle token if not using cookies
+                                // But usually for downloads, we might need a workaround if using Bearer token
+                            }}
+                        >
+                            <span>📥</span> Export to CSV
+                        </a>
+                    )}
                 </header>
 
                 {loading ? (

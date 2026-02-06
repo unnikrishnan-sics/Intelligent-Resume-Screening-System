@@ -167,7 +167,7 @@ const ApplyJob = () => {
                                     </div>
                                 </div>
                                 <div style={{ textAlign: 'right' }}>
-                                    <Link to={`/profiles`} style={{ fontSize: '0.9rem', color: 'var(--primary)' }}>Update Profile</Link>
+                                    <Link to={`/profile`} style={{ fontSize: '0.9rem', color: 'var(--primary)' }}>Update Profile</Link>
                                 </div>
                             </div>
                         </div>

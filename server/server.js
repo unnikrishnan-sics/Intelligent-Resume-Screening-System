@@ -30,6 +30,7 @@ const resumeRoutes = require('./routes/resumeRoutes');
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/resumes', resumeRoutes);
+app.use('/api/contact', require('./routes/contactRoutes'));
 
 // Serve Uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

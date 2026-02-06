@@ -236,6 +236,39 @@ const checkApplicationStatus = async (req, res) => {
     }
 };
 
+// @desc    Export resumes to CSV
+// @route   GET /api/resumes/job/:jobId/export
+// @access  Private (Recruiter)
+const exportResumesToCSV = async (req, res) => {
+    try {
+        const resumes = await Resume.find({ job: req.params.jobId }).sort({ similarityScore: -1 });
+
+        if (!resumes || resumes.length === 0) {
+            return res.status(404).json({ message: 'No applicants found to export' });
+        }
+
+        const { Parser } = require('json2csv');
+        const fields = [
+            { label: 'Candidate Name', value: 'candidateName' },
+            { label: 'Email', value: 'email' },
+            { label: 'Phone', value: 'phone' },
+            { label: 'AI Score (%)', value: (row) => Math.round(row.similarityScore) },
+            { label: 'Classification', value: 'classification' },
+            { label: 'Applied Date', value: (row) => new Date(row.createdAt).toLocaleDateString() }
+        ];
+
+        const json2csvParser = new Parser({ fields });
+        const csv = json2csvParser.parse(resumes);
+
+        res.header('Content-Type', 'text/csv');
+        res.attachment(`applicants-${req.params.jobId}.csv`);
+        return res.send(csv);
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     uploadResume,
     getResumesByJob,
@@ -243,5 +276,6 @@ module.exports = {
     getMyResumes,
     uploadProfileResume,
     deleteProfileResume,
-    checkApplicationStatus
+    checkApplicationStatus,
+    exportResumesToCSV
 };

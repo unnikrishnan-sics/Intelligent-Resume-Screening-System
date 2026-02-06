@@ -4,7 +4,8 @@ const multer = require('multer');
 const path = require('path');
 const { uploadResume, getResumesByJob, getResumeById, getMyResumes, uploadProfileResume,
     deleteProfileResume,
-    checkApplicationStatus
+    checkApplicationStatus,
+    exportResumesToCSV
 } = require('../controllers/resumeController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -43,6 +44,7 @@ router.delete('/profile', protect, deleteProfileResume);
 router.get('/my-resumes', protect, getMyResumes);
 router.get('/check/:jobId', protect, checkApplicationStatus);
 router.get('/job/:jobId', protect, getResumesByJob);
+router.get('/job/:jobId/export', protect, exportResumesToCSV);
 router.get('/:id', protect, getResumeById);
 
 module.exports = router;
