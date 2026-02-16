@@ -3,13 +3,12 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import toast from 'react-hot-toast';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
     const { login } = useAuth();
     const navigate = useNavigate();
 
@@ -17,31 +16,20 @@ const Login = () => {
         setShowPassword(!showPassword);
     };
 
-    // Auto-dismiss messages
-    useEffect(() => {
-        if (success || error) {
-            const timer = setTimeout(() => {
-                setSuccess('');
-                setError('');
-            }, 3000);
-            return () => clearTimeout(timer);
-        }
-    }, [success, error]);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
-        setSuccess('');
         try {
-            const userData = await login(email, password);
-            setSuccess('Sign in successfully completed');
+            await login(email, password);
+            toast.success('Sign in successfully completed');
 
             // Short delay to show success message
             setTimeout(() => {
                 navigate('/dashboard');
-            }, 1500);
+            }, 1000);
         } catch (err) {
-            setError(err.response?.data?.message || 'Login failed');
+            toast.error(err.response?.data?.message || 'Login failed');
         }
     };
 
@@ -63,9 +51,6 @@ const Login = () => {
                         <h1 style={{ fontSize: '1.75rem', color: '#1e293b' }}>Welcome Back</h1>
                         <p style={{ color: '#64748b' }}>Please sign in to your account</p>
                     </div>
-
-                    {error && <div className="text-danger text-center mb-4" style={{ backgroundColor: '#fee2e2', padding: '0.75rem', borderRadius: '0.375rem' }}>{error}</div>}
-                    {success && <div className="text-success text-center mb-4" style={{ backgroundColor: '#dcfce7', padding: '0.75rem', borderRadius: '0.375rem' }}>{success}</div>}
 
                     <form onSubmit={handleSubmit} className="flex-col gap-4">
                         <div className="form-group">

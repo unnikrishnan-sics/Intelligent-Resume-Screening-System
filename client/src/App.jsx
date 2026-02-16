@@ -34,11 +34,14 @@ const DashboardDispatcher = () => {
   return <CandidateDashboard />;
 };
 
+import { Toaster } from 'react-hot-toast';
+
 function App() {
   return (
     <Router>
       <AuthProvider>
         <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
+          <Toaster position="top-right" />
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />

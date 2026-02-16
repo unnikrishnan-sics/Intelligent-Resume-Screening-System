@@ -3,6 +3,7 @@ import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 const Profile = () => {
     const { user, updateUser } = useAuth(); // Use updateUser to update context without API call
@@ -51,22 +52,19 @@ const Profile = () => {
         formData.append('resume', file);
 
         setUploading(true);
-        setError(null);
-        setMessage(null);
 
         try {
             const { data } = await api.post('/resumes/profile', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
-            setMessage('Resume updated successfully!');
+            toast.success('Resume updated successfully!');
             setResumeData({
                 originalName: data.resumeOriginalName
             });
-            // Update Auth Context with new user data (including resume)
             updateUser(data);
         } catch (err) {
             console.error(err);
-            setError(err.response?.data?.message || 'Failed to upload resume');
+            toast.error(err.response?.data?.message || 'Failed to upload resume');
         } finally {
             setUploading(false);
         }
@@ -76,8 +74,6 @@ const Profile = () => {
         e.preventDefault();
 
         setLoading(true);
-        setError(null);
-        setMessage(null);
 
         try {
             const { data } = await api.put('/auth/profile', {
@@ -86,19 +82,12 @@ const Profile = () => {
                 phone
             });
 
-            setMessage('Profile updated successfully!');
-            // Update Auth Context
-            // Assuming the `login` function in AuthContext takes the response data object (which has token + user info)
-            // If AuthContext expects just the token, this might be tricky without seeing AuthContext source.
-            // But usually contexts have a way to set user.
-            // If `login(data)` works, great.
-            // The `login` in `AuthContext` usually does: `localStorage.setItem('user', JSON.stringify(data)); setUser(data);`
-            // Let's assume this structure from typical MERN stacks.
+            toast.success('Profile updated successfully!');
             updateUser(data);
 
         } catch (err) {
             console.error(err);
-            setError(err.response?.data?.message || 'Failed to update profile');
+            toast.error(err.response?.data?.message || 'Failed to update profile');
         } finally {
             setLoading(false);
         }

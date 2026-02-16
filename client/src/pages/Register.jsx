@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import toast from 'react-hot-toast';
 
 const Register = () => {
     const [name, setName] = useState('');
@@ -11,8 +12,6 @@ const Register = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [role, setRole] = useState('candidate');
     const [phone, setPhone] = useState('');
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
     const { register } = useAuth();
     const navigate = useNavigate();
 
@@ -20,35 +19,22 @@ const Register = () => {
         setShowPassword(!showPassword);
     };
 
-    // Auto-dismiss messages
-    useEffect(() => {
-        if (success || error) {
-            const timer = setTimeout(() => {
-                setSuccess('');
-                setError('');
-            }, 5000); // Wait bit longer on register for readability
-            return () => clearTimeout(timer);
-        }
-    }, [success, error]);
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
-        setSuccess('');
         try {
             const data = await register(name, email, password, role, phone);
 
             if (role === 'recruiter' && !data.isApproved) {
-                setSuccess('Registration successful! Please wait for Admin approval.');
+                toast.success('Registration successful! Please wait for Admin approval.');
                 setTimeout(() => navigate('/login'), 3000);
             } else {
-                setSuccess('Registration successful! Redirecting to login...');
+                toast.success('Registration successful! Redirecting to login...');
                 setTimeout(() => {
                     navigate('/login');
                 }, 2000);
             }
         } catch (err) {
-            setError(err.response?.data?.message || 'Registration failed');
+            toast.error(err.response?.data?.message || 'Registration failed');
         }
     };
 
@@ -70,9 +56,6 @@ const Register = () => {
                         <h1 style={{ fontSize: '1.75rem', color: '#1e293b' }}>Create Account</h1>
                         <p style={{ color: '#64748b' }}>Join us to streamline your hiring</p>
                     </div>
-
-                    {error && <div className="text-danger text-center mb-4" style={{ backgroundColor: '#fee2e2', padding: '0.75rem', borderRadius: '0.375rem' }}>{error}</div>}
-                    {success && <div className="text-success text-center mb-4" style={{ backgroundColor: '#dcfce7', padding: '0.75rem', borderRadius: '0.375rem' }}>{success}</div>}
 
                     <form onSubmit={handleSubmit} className="flex-col gap-4">
                         <div className="form-group">

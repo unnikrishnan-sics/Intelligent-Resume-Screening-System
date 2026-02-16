@@ -4,9 +4,10 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import toast from 'react-hot-toast';
 
 const CandidateDashboard = () => {
-    const { user } = useAuth();
+    const { user, updateUser } = useAuth();
     const [applications, setApplications] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -40,6 +41,23 @@ const CandidateDashboard = () => {
         return Math.floor(seconds / 3600) + "h";
     };
 
+    const handleDeleteResume = async () => {
+        if (window.confirm('Are you sure you want to remove your master resume?')) {
+            try {
+                await api.delete('/resumes/profile');
+                toast.success('Master resume removed');
+                // Manually update context since backend just returns message
+                updateUser({
+                    ...user,
+                    resume: null,
+                    resumeOriginalName: null
+                });
+            } catch (err) {
+                toast.error('Delete failed');
+            }
+        }
+    };
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#f9fafb' }}>
             <Navbar />
@@ -49,7 +67,7 @@ const CandidateDashboard = () => {
 
                     {/* Hero Section */}
                     <header style={{ marginBottom: '3rem', textAlign: 'center' }}>
-                        <h1 style={{ marginBottom: '0.5rem', fontSize: '2.5rem' }}>Welcome back, {user?.name.split(' ')[0]}! 👋</h1>
+                        <h1 style={{ marginBottom: '0.5rem', fontSize: '2.5rem' }}>Welcome back, {(user?.name || 'User').split(' ')[0]}! 👋</h1>
                         <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', maxWidth: '600px', margin: '0 auto' }}>
                             Ready to take the next step in your career? Track your applications and explore new opportunities.
                         </p>
@@ -62,8 +80,6 @@ const CandidateDashboard = () => {
                         </div>
                     ) : (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
-
-
 
                             {/* Section 2: Master Resume Management */}
                             <div>
@@ -89,12 +105,16 @@ const CandidateDashboard = () => {
                                                     const formData = new FormData();
                                                     formData.append('resume', file);
                                                     try {
-                                                        const res = await api.post('/resumes/profile', formData);
-                                                        // Refresh user in context or just reload page for simplicity
-                                                        alert('Master resume updated successfully!');
-                                                        window.location.reload();
+                                                        const res = await api.post('/resumes/profile', formData, {
+                                                            headers: {
+                                                                'Content-Type': 'multipart/form-data'
+                                                            }
+                                                        });
+                                                        toast.success('Master resume updated successfully!');
+                                                        // Update context state
+                                                        updateUser(res.data);
                                                     } catch (err) {
-                                                        alert('Upload failed: ' + (err.response?.data?.message || err.message));
+                                                        toast.error('Upload failed: ' + (err.response?.data?.message || err.message));
                                                     }
                                                 }}
                                             />
@@ -105,22 +125,8 @@ const CandidateDashboard = () => {
                                                 {user?.resume ? 'Update Resume' : 'Upload Resume'}
                                             </button>
                                             {user?.resume && (
-                                                <button
-                                                    className="btn btn-outline"
-                                                    style={{ borderColor: '#ef4444', color: '#ef4444' }}
-                                                    onClick={async () => {
-                                                        if (window.confirm('Are you sure you want to remove your master resume?')) {
-                                                            try {
-                                                                await api.delete('/resumes/profile');
-                                                                alert('Master resume removed');
-                                                                window.location.reload();
-                                                            } catch (err) {
-                                                                alert('Delete failed');
-                                                            }
-                                                        }
-                                                    }}
-                                                >
-                                                    Remove
+                                                <button onClick={handleDeleteResume} className="btn btn-outline-danger">
+                                                    Remove Resume
                                                 </button>
                                             )}
                                         </div>
