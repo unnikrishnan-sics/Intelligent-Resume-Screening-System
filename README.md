@@ -2,37 +2,41 @@
 
 An AI-powered recruitment platform designed to streamline the hiring process. This application automates resume parsing, scoring, and classification using a Python ML engine, providing recruiters with instant insights and candidates with gap analysis comparisons.
 
-## ✨ Key Features
+## 👤 User Functions
 
-- **Role-Based Access Control**:
-  - **Admin**: Approve recruiters, manage users, and oversee the platform.
-  - **Recruiter**: Post jobs, view applicants, and get AI-driven insights on resumes.
-  - **Candidate**: Browse jobs, apply with one click, and view "Gap Analysis" reports.
+### Admin
+- **Manage Users**: Approve or decline new recruiter registrations.
+- **Platform Oversight**: View system-wide statistics including total candidates, recruiters, and job applications.
+- **Candidate Management**: View detailed candidate profiles and their application history.
 
-- **AI-Powered Analysis**:
-  - **Resume Parsing**: Automatically extracts text and skills from PDF/DOCX resumes.
-  - **Relevance Scoring**: Assigns a match score (0-100%) based on job requirements.
-  - **Smart Classification**: Categorizes applicants as *Highly Suitable*, *Moderately Suitable*, or *Not Suitable*.
+### Recruiter
+- **Job Management**: Create, update, and delete job postings with detailed requirements.
+- **Applicant Tracking**: View a ranked list of applicants for each job based on AI scores.
+- **Resume Analysis**: Access detailed AI-driven reports on candidate suitability.
 
-- **Candidate Gap Analysis**:
-  - Provides transparency to applicants by showing which skills matched and highlighting potential gaps against job descriptions.
+### Candidate
+- **Job Search**: Browse active job listings.
+- **Easy Apply**: Upload resumes to apply for jobs directly.
+- **Gap Analysis**: Receive instant feedback on how well your resume matches the job description and identify missing skills.
 
-## 🛠️ Tech Stack
+## 🔄 Project Flow
 
-- **Frontend**: React.js (Vite), Context API, Vanilla CSS (Premium Design).
-- **Backend**: Node.js, Express.js, MongoDB (Mongoose).
-- **ML Engine**: Python, Flask, NLTK/Spacy (for parsing logic).
+1.  **Registration**: Users sign up. Recruiters are placed in a pending state until approved by an Admin.
+2.  **Job Posting**: Approved Recruiters post jobs with specific skill requirements.
+3.  **Application**: Candidates browse jobs and upload their resumes.
+4.  **AI Processing**: The system parses the resume, compares it against the job description, and calculates a match score.
+5.  **Review**: 
+    - Recruiters see a sorted list of best-fit candidates.
+    - Candidates see a "Gap Analysis" report highlighting their strengths and missing skills.
 
-## 🚀 Getting Started
+## 🚀 Installation & Setup
 
 ### Prerequisites
-
 - Node.js (v14+)
 - Python (v3.8+)
-- MongoDB (Running locally or Atlas URI)
+- MongoDB (Running locally or via Atlas URI)
 
-### 1. Setup Backend (Server)
-
+### 1. Backend Setup (Server)
 ```bash
 cd server
 npm install
@@ -43,16 +47,14 @@ npm install
 npm run dev
 ```
 
-### 2. Setup Frontend (Client)
-
+### 2. Frontend Setup (Client)
 ```bash
 cd client
 npm install
 npm run dev
 ```
 
-### 3. Setup ML Engine (AI)
-
+### 3. ML Engine Setup (AI Service)
 ```bash
 cd ml_engine
 # Create a virtual environment (optional but recommended)
@@ -62,11 +64,3 @@ source venv/bin/activate # or venv\Scripts\activate on Windows
 pip install -r requirements.txt
 python app.py
 ```
-
-## 🧪 Usage Flow
-
-1.  **Register/Login**: Users sign up. Recruiters require Admin approval.
-2.  **Post Job**: Recruiters create detailed job postings.
-3.  **Apply**: Candidates upload resumes.
-4.  **AI Processing**: System parses the resume and calculates a score against the job description.
-5.  **Review**: Recruiters see a ranked list. Candidates see their personal gap analysis.
