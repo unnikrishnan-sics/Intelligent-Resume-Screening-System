@@ -10,10 +10,10 @@ router.post('/login', loginUser);
 router.get('/pending', protect, protectAdmin, getPendingRecruiters);
 router.get('/candidates', protect, protectAdmin, getCandidates);
 router.get('/candidate/:id', protect, protectAdmin, getCandidateDetails);
-router.get('/recruiters', protect, protectAdmin, getRecruiters);
-router.get('/stats', protect, protectAdmin, getAdminStats);
-router.put('/approve/:id', protect, protectAdmin, approveRecruiter);
-router.put('/deactivate/:id', protect, protectAdmin, deactivateRecruiter);
-router.put('/profile', protect, updateUserProfile);
+// router.get('/recruiters', protect, protectAdmin, getRecruiters);
+// router.get('/stats', protect, protectAdmin, getAdminStats);
+// router.put('/approve/:id', protect, protectAdmin, approveRecruiter);
+// router.put('/deactivate/:id', protect, protectAdmin, deactivateRecruiter);
+// router.put('/profile', protect, updateUserProfile);
 
 module.exports = router;

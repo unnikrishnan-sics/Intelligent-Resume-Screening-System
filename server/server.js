@@ -39,6 +39,14 @@ app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
+// 404 Handler for undefined routes
+app.use((req, res, next) => {
+    res.status(404).json({
+        success: false,
+        message: 'Route not found. This feature is not yet implemented or has been disabled.'
+    });
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
