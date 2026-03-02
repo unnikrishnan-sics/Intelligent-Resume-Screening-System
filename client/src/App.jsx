@@ -18,6 +18,7 @@ import Applications from './pages/Applications';
 import CreateJob from './pages/CreateJob';
 import EditJob from './pages/EditJob';
 import PrivateRoute from './components/PrivateRoute';
+import AdminRoute from './components/AdminRoute';
 import ApplyJob from './pages/ApplyJob';
 import JobApplicants from './pages/JobApplicants';
 import ResumeDetails from './pages/ResumeDetails';
@@ -69,10 +70,12 @@ function App() {
               <Route path="/my-applications/:id" element={<MyApplicationDetails />} />
               <Route path="/profile" element={<Profile />} />
 
-              {/* Admin Only Routes - In a real app, wrap in AdminRoute component */}
-              <Route path="/recruiters" element={<AdminRecruiters />} />
-              <Route path="/candidates" element={<AdminCandidates />} />
-              <Route path="/candidates/:id" element={<AdminCandidateDetails />} />
+              {/* Admin Only Routes */}
+              <Route element={<AdminRoute />}>
+                <Route path="/recruiters" element={<AdminRecruiters />} />
+                <Route path="/candidates" element={<AdminCandidates />} />
+                <Route path="/candidates/:id" element={<AdminCandidateDetails />} />
+              </Route>
             </Route>
 
             {/* Default redirect */}

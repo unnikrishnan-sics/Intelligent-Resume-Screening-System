@@ -31,3 +31,6 @@ coverage/
 # IDEs
 .vscode/
 .idea/
+
+# Uploads
+server/uploads/

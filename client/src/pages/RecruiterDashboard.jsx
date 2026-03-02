@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import Sidebar from '../components/Sidebar';
+import { toast } from 'react-hot-toast';
 
 const RecruiterDashboard = () => {
     const { user } = useAuth();
@@ -41,9 +42,10 @@ const RecruiterDashboard = () => {
             setJobs(jobs.filter(job => job._id !== id));
             // Recalculate stats
             setStats(prev => ({ ...prev, active: jobs.find(j => j._id === id)?.status === 'active' ? prev.active - 1 : prev.active }));
+            toast.success('Job deleted successfully');
         } catch (error) {
             console.error("Failed to delete job", error);
-            alert('Failed to delete job');
+            toast.error('Failed to delete job');
         }
     };
 
@@ -53,9 +55,10 @@ const RecruiterDashboard = () => {
             await api.put(`/jobs/${job._id}`, { status: newStatus });
             setJobs(jobs.map(j => j._id === job._id ? { ...j, status: newStatus } : j));
             setStats(prev => ({ ...prev, active: newStatus === 'active' ? prev.active + 1 : prev.active - 1 }));
+            toast.success(`Job marked as ${newStatus}`);
         } catch (error) {
             console.error("Failed to update status", error);
-            alert('Failed to update status');
+            toast.error('Failed to update status');
         }
     };
 

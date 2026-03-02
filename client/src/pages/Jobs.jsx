@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import Sidebar from '../components/Sidebar';
 import { useAuth } from '../context/AuthContext';
+import { toast } from 'react-hot-toast';
 
 const Jobs = () => {
     const [jobs, setJobs] = useState([]);
@@ -47,9 +48,10 @@ const Jobs = () => {
         try {
             await api.delete(`/jobs/${id}`);
             setJobs(jobs.filter(job => job._id !== id));
+            toast.success('Job deleted successfully');
         } catch (error) {
             console.error("Failed to delete job", error);
-            alert('Failed to delete job');
+            toast.error('Failed to delete job');
         }
     };
 
@@ -58,9 +60,10 @@ const Jobs = () => {
         try {
             await api.put(`/jobs/${job._id}`, { status: newStatus });
             setJobs(jobs.map(j => j._id === job._id ? { ...j, status: newStatus } : j));
+            toast.success(`Job marked as ${newStatus}`);
         } catch (error) {
             console.error("Failed to update status", error);
-            alert('Failed to update status');
+            toast.error('Failed to update status');
         }
     };
 

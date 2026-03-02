@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import Sidebar from '../components/Sidebar';
+import { toast } from 'react-hot-toast';
 
 const Recruiters = () => {
     const [recruiters, setRecruiters] = useState([]);
@@ -29,9 +30,9 @@ const Recruiters = () => {
             await api.put(`/auth/approve/${id}`);
             // Refresh list
             fetchRecruiters();
-            alert('Recruiter Approved!');
+            toast.success('Recruiter Approved!');
         } catch (error) {
-            alert(error.response?.data?.message || 'Failed to approve');
+            toast.error(error.response?.data?.message || 'Failed to approve');
         }
     };
 
