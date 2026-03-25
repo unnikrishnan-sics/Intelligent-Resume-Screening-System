@@ -9,6 +9,9 @@ const AdminCandidateDetails = () => {
     const [loading, setLoading] = useState(true);
     const [selectedResumeUrl, setSelectedResumeUrl] = useState(null);
 
+    const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+    const serverBase = apiBase.replace('/api', '');
+
     useEffect(() => {
         const fetchDetails = async () => {
             try {
@@ -17,7 +20,7 @@ const AdminCandidateDetails = () => {
                 // Set initial resume if available
                 if (data.applications && data.applications.length > 0) {
                     const latestResume = data.applications[0];
-                    setSelectedResumeUrl(`http://localhost:5000/${latestResume.filePath.replace(/\\/g, '/')}`);
+                    setSelectedResumeUrl(encodeURI(`${serverBase}/${latestResume.filePath.replace(/\\/g, '/')}`));
                 }
             } catch (error) {
                 console.error("Failed to fetch candidate details", error);
@@ -26,10 +29,10 @@ const AdminCandidateDetails = () => {
             }
         };
         fetchDetails();
-    }, [id]);
+    }, [id, serverBase]);
 
     const handleViewResume = (filePath) => {
-        setSelectedResumeUrl(`http://localhost:5000/${filePath.replace(/\\/g, '/')}`);
+        setSelectedResumeUrl(encodeURI(`${serverBase}/${filePath.replace(/\\/g, '/')}`));
     };
 
     if (loading) {

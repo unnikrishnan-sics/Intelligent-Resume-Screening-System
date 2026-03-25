@@ -56,12 +56,11 @@ const ResumeDetails = () => {
         );
     }
 
-    // Construct file URL. Assuming backend runs on 5000 and serves uploads at root or /uploads
-    // We'll use the API base URL logic but replace /api if needed, or just hardcode for now based on known setup
-    // api.defaults.baseURL is likely http://localhost:5000/api
-    // files are at http://localhost:5000/uploads/... ideally
+    // Construct file URL
+    const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+    const serverBase = apiBase.replace('/api', '');
     const scoreColor = getScoreColor(resume.similarityScore);
-    const fileUrl = `http://localhost:5000/${resume.filePath.replace(/\\/g, '/')}`;
+    const fileUrl = encodeURI(`${serverBase}/${resume.filePath.replace(/\\/g, '/')}`);
 
     return (
         <div className="dashboard-layout">

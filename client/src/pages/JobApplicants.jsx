@@ -48,7 +48,7 @@ const JobApplicants = () => {
                     </div>
                     {applicants.length > 0 && (
                         <a
-                            href={`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/resumes/job/${jobId}/export`}
+                            href={encodeURI(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'}/resumes/job/${jobId}/export`)}
                             download
                             className="btn btn-primary"
                             style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
