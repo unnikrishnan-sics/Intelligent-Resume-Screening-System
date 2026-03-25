@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../services/api';
 import Sidebar from '../components/Sidebar';
 
@@ -139,13 +140,22 @@ const AdminRecruiters = () => {
                                                     Approve
                                                 </button>
                                             ) : (
-                                                <button
-                                                    onClick={() => deactivateUser(recruiter._id)}
-                                                    className="btn btn-outline btn-sm"
-                                                    style={{ fontSize: '0.85rem', padding: '0.4rem 1rem', borderColor: '#ef4444', color: '#ef4444' }}
-                                                >
-                                                    Deactivate
-                                                </button>
+                                                <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                                                    <Link
+                                                        to={`/recruiters/${recruiter._id}/resumes`}
+                                                        className="btn btn-primary btn-sm"
+                                                        style={{ fontSize: '0.85rem', padding: '0.4rem 1rem' }}
+                                                    >
+                                                        View Resumes
+                                                    </Link>
+                                                    <button
+                                                        onClick={() => deactivateUser(recruiter._id)}
+                                                        className="btn btn-outline btn-sm"
+                                                        style={{ fontSize: '0.85rem', padding: '0.4rem 1rem', borderColor: '#ef4444', color: '#ef4444' }}
+                                                    >
+                                                        Deactivate
+                                                    </button>
+                                                </div>
                                             )}
                                         </td>
                                     </tr>

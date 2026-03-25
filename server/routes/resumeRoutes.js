@@ -5,9 +5,11 @@ const path = require('path');
 const { uploadResume, getResumesByJob, getResumeById, getMyResumes, uploadProfileResume,
     deleteProfileResume,
     checkApplicationStatus,
-    exportResumesToCSV
+    exportResumesToCSV,
+    getResumesByRecruiter
 } = require('../controllers/resumeController');
 const { protect } = require('../middleware/authMiddleware');
+const { protectAdmin } = require('../middleware/adminMiddleware');
 
 // Multer Config
 const storage = multer.diskStorage({
@@ -42,9 +44,10 @@ router.post('/profile', protect, upload.single('resume'), uploadProfileResume);
 router.delete('/profile', protect, deleteProfileResume);
 
 router.get('/my-resumes', protect, getMyResumes);
-// router.get('/check/:jobId', protect, checkApplicationStatus);
-// router.get('/job/:jobId', protect, getResumesByJob);
-// router.get('/job/:jobId/export', protect, exportResumesToCSV);
-// router.get('/:id', protect, getResumeById);
+router.get('/check/:jobId', protect, checkApplicationStatus);
+router.get('/job/:jobId', protect, getResumesByJob);
+router.get('/job/:jobId/export', protect, exportResumesToCSV);
+router.get('/recruiter/:recruiterId', protect, protectAdmin, getResumesByRecruiter);
+router.get('/:id', protect, getResumeById);
 
 module.exports = router;

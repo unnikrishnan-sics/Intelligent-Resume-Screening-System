@@ -269,6 +269,20 @@ const exportResumesToCSV = async (req, res) => {
     }
 };
 
+// @desc    Get resumes for all jobs of a recruiter (For Admin)
+// @route   GET /api/resumes/recruiter/:recruiterId
+// @access  Private (Admin)
+const getResumesByRecruiter = async (req, res) => {
+    try {
+        const jobs = await Job.find({ user: req.params.recruiterId });
+        const jobIds = jobs.map(job => job._id);
+        const resumes = await Resume.find({ job: { $in: jobIds } }).populate('job').sort({ createdAt: -1 });
+        res.status(200).json(resumes);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     uploadResume,
     getResumesByJob,
@@ -277,5 +291,6 @@ module.exports = {
     uploadProfileResume,
     deleteProfileResume,
     checkApplicationStatus,
-    exportResumesToCSV
+    exportResumesToCSV,
+    getResumesByRecruiter
 };
