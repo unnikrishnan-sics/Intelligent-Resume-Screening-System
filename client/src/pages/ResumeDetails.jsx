@@ -130,16 +130,27 @@ const ResumeDetails = () => {
                         <div className="card" style={{ padding: '0', overflow: 'hidden' }}>
                             <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <h3 style={{ fontSize: '1.2rem', margin: 0 }}>Resume Preview</h3>
-                                <a href={fileUrl} download target="_blank" rel="noreferrer" style={{ fontSize: '0.9rem', color: 'var(--primary)', textDecoration: 'none' }}>
+                                <a href={fileUrl} target="_blank" rel="noreferrer" style={{ fontSize: '0.9rem', color: 'var(--primary)', textDecoration: 'none' }}>
                                     Open in New Tab ↗
                                 </a>
                             </div>
                             <div style={{ height: '850px', backgroundColor: '#f1f5f9' }}>
-                                <iframe
-                                    src={fileUrl}
-                                    title="Resume Viewer"
-                                    style={{ width: '100%', height: '100%', border: 'none' }}
-                                />
+                                {resume.fileName?.toLowerCase().endsWith('.pdf') ? (
+                                    <iframe
+                                        src={fileUrl}
+                                        title="Resume Viewer"
+                                        style={{ width: '100%', height: '100%', border: 'none' }}
+                                    />
+                                ) : (
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#64748b', padding: '2rem', textAlign: 'center' }}>
+                                        <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📄</div>
+                                        <h4>Preview not available for this file type</h4>
+                                        <p>Please download the file to view its content.</p>
+                                        <a href={fileUrl} download className="btn btn-primary" style={{ marginTop: '1rem' }}>
+                                            Download {resume.fileName?.split('.').pop().toUpperCase()}
+                                        </a>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
