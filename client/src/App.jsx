@@ -25,6 +25,7 @@ import ResumeDetails from './pages/ResumeDetails';
 import MyApplicationDetails from './pages/MyApplicationDetails';
 import Profile from './pages/Profile';
 import AdminRecruiterResumes from './pages/AdminRecruiterResumes';
+import AdminMessages from './pages/AdminMessages';
 
 // Route Dispatcher based on Role
 const DashboardDispatcher = () => {
@@ -77,6 +78,7 @@ function App() {
                 <Route path="/recruiters/:recruiterId/resumes" element={<AdminRecruiterResumes />} />
                 <Route path="/candidates" element={<AdminCandidates />} />
                 <Route path="/candidates/:id" element={<AdminCandidateDetails />} />
+                <Route path="/admin/messages" element={<AdminMessages />} />
               </Route>
             </Route>
 

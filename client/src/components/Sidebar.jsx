@@ -54,6 +54,9 @@ const Sidebar = () => {
                             <Link to="/candidates" className={`sidebar-link ${isActive('/candidates') ? 'active' : ''}`}>
                                 <span>👥</span> Candidates
                             </Link>
+                            <Link to="/admin/messages" className={`sidebar-link ${isActive('/admin/messages') ? 'active' : ''}`}>
+                                <span>✉️</span> Messages
+                            </Link>
                         </>
                     )}
 
