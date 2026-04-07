@@ -135,7 +135,7 @@ const ResumeDetails = () => {
                                     Open in New Tab ↗
                                 </a>
                             </div>
-                            <div style={{ height: '850px', backgroundColor: '#f1f5f9' }}>
+                            <div style={{ height: '850px', backgroundColor: '#f1f5f9', overflow: 'hidden', position: 'relative' }}>
                                 <ResumeViewer url={fileUrl} fileName={resume.fileName} />
                             </div>
                         </div>

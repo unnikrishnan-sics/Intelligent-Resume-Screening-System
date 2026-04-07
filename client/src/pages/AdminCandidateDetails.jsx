@@ -141,7 +141,7 @@ const AdminCandidateDetails = () => {
                                 </a>
                             )}
                         </div>
-                        <div style={{ flex: 1, backgroundColor: '#f1f5f9' }}>
+                        <div style={{ flex: 1, backgroundColor: '#f1f5f9', overflow: 'hidden', position: 'relative' }}>
                             <ResumeViewer url={selectedResumeUrl} />
                         </div>
                     </div>
