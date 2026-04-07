@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../services/api';
 import Sidebar from '../components/Sidebar';
+import ResumeViewer from '../components/ResumeViewer';
 
 const AdminCandidateDetails = () => {
     const { id } = useParams();
@@ -17,11 +18,7 @@ const AdminCandidateDetails = () => {
             try {
                 const { data } = await api.get(`/auth/candidate/${id}`);
                 setProfile(data);
-                // Set initial resume if available
-                if (data.applications && data.applications.length > 0) {
-                    const latestResume = data.applications[0];
-                    setSelectedResumeUrl(encodeURI(`${serverBase}/${latestResume.filePath.replace(/\\/g, '/')}`));
-                }
+                // Removed automatic selection of first resume to prevent auto-download
             } catch (error) {
                 console.error("Failed to fetch candidate details", error);
             } finally {
@@ -145,17 +142,7 @@ const AdminCandidateDetails = () => {
                             )}
                         </div>
                         <div style={{ flex: 1, backgroundColor: '#f1f5f9' }}>
-                            {selectedResumeUrl ? (
-                                <iframe
-                                    src={selectedResumeUrl}
-                                    title="Resume Viewer"
-                                    style={{ width: '100%', height: '100%', border: 'none' }}
-                                />
-                            ) : (
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#94a3b8' }}>
-                                    Select an application to view resume
-                                </div>
-                            )}
+                            <ResumeViewer url={selectedResumeUrl} />
                         </div>
                     </div>
                 </div>

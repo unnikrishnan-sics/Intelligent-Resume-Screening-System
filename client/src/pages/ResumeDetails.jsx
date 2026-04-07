@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../services/api';
 import Sidebar from '../components/Sidebar';
+import ResumeViewer from '../components/ResumeViewer';
 
 const ResumeDetails = () => {
     const { id } = useParams();
@@ -135,22 +136,7 @@ const ResumeDetails = () => {
                                 </a>
                             </div>
                             <div style={{ height: '850px', backgroundColor: '#f1f5f9' }}>
-                                {resume.fileName?.toLowerCase().endsWith('.pdf') ? (
-                                    <iframe
-                                        src={fileUrl}
-                                        title="Resume Viewer"
-                                        style={{ width: '100%', height: '100%', border: 'none' }}
-                                    />
-                                ) : (
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#64748b', padding: '2rem', textAlign: 'center' }}>
-                                        <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📄</div>
-                                        <h4>Preview not available for this file type</h4>
-                                        <p>Please download the file to view its content.</p>
-                                        <a href={fileUrl} download className="btn btn-primary" style={{ marginTop: '1rem' }}>
-                                            Download {resume.fileName?.split('.').pop().toUpperCase()}
-                                        </a>
-                                    </div>
-                                )}
+                                <ResumeViewer url={fileUrl} fileName={resume.fileName} />
                             </div>
                         </div>
 
